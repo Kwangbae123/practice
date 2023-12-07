@@ -2,8 +2,8 @@
 import os, sys
 import numpy as np
 sys.path.append(os.pardir)
-from chapter3 import *
-from chapter4 import *
+from chapter4 import numerical_gradient
+from chapter3 import sigmoid
 from chapter5 import *
 from _collections import OrderedDict #순서가 있는 딕셔너리 생성 모듈
 
@@ -22,7 +22,7 @@ class TwoLayerNet:
         self.layers['Affine1'] = Affine(self.params['W1'], self.params['b1'])
         self.layers['Relu1'] = Relu()
         self.layers['Affine2'] = Affine(self.params['W2'], self.params['b2'])
-        self.lastLayers = SoftmaxWithLoss
+        self.lastLayer = SoftmaxWithLoss()
 
     def predict(self, x): # 예측을 진행한다. x는 이미지 데이터
         # W1 ,W2 = self.params['W1'], self.params['W2']
@@ -38,18 +38,18 @@ class TwoLayerNet:
     # x : 입력데이터 , t = 정답 label
     def loss(self, x, t): # 손실함수 계산 x = 이미지 데이터, t = 정답 label
         y = self.predict(x)
-        return cross_entropy_error(y, t)
+        return self.lastLayer.forward(y, t)
 
     def accuracy(self, x, t): # 정확도를 구한다.
         y = self.predict(x)
         y = np.argmax(y, axis=1)
-        t = np.argmax(t, axis=1)
+        if t.ndim != 1 : t = np.argmax(t, axis=1)
 
         accuracy = np.sum(y == t) / float(x.shape[0])
         return accuracy
 
     def numerical_gradient(self, x, t): # 가중치 매개변수의 기울기를 구한다.
-        loss_W = lambda W: self.loss(x, t)
+        loss_W = lambda W : self.loss(x, t)
 
         grads = {} # 기울기를 보관하는 딕셔너리 변수
         # W1 = 1번째 층의 가중치의 기울기 , b1 = 1번째 층의 bias의 기울기
@@ -65,7 +65,7 @@ class TwoLayerNet:
 
         #역전파
         dout = 1
-        dout = self.lastLayers.backward(dout)
+        dout = self.lastLayer.backward(dout)
 
         layers = list(self.layers.values())
         layers.reverse()

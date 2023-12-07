@@ -78,11 +78,14 @@ def forward(network, x): #forward propagation을 진행한다.
 # y = forward(network,x)
 # print(y)
 
-def softmax(a):
-    c = np.max(a)
-    exp_a = np.exp(a - c) #오버플로우 방지
-    sum_exp_a = np.sum(exp_a)
-    y = exp_a / sum_exp_a
-    return y
+def softmax(x):
+    if x.ndim == 2:
+        x = x.T
+        x = x - np.max(x, axis=0)
+        y = np.exp(x) / np.sum(np.exp(x), axis=0)
+        return y.T
+
+    x = x - np.max(x) # 오버플로 대책
+    return np.exp(x) / np.sum(np.exp(x))
 # softmax 함수의 출력은 0~1이고 총합은 1이다 이로인해 softmax의 함수의 출력을 확률로 해석이 가능하다.
 # 문제를 확률적으로 대응 할수 있게 된다.

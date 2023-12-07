@@ -67,7 +67,7 @@ def numerical_gradient(f, x):
     while not it.finished:
         idx = it.multi_index
         tmp_val = x[idx] # f(x+h) 계산
-        x[idx] = tmp_val +h
+        x[idx] = tmp_val + h
         fxh1 = f(x)
 
         x[idx] = tmp_val - h # f(x-h) 계산
@@ -116,4 +116,4 @@ def f(W):
     return net.loss(x, t)
 
 dW = numerical_gradient(f, net.W)
-print(dW)
+# print(dW)
