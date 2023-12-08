@@ -1,11 +1,9 @@
 # 2층 신경망 클래스 구현
 import os, sys
-import numpy as np
 sys.path.append(os.pardir)
-from chapter4 import numerical_gradient
-from chapter3 import sigmoid
+from util.gradient import numerical_gradient
 from chapter5 import *
-from _collections import OrderedDict #순서가 있는 딕셔너리 생성 모듈
+from collections import OrderedDict #순서가 있는 딕셔너리 생성 모듈
 
 class TwoLayerNet:
     def __init__(self, input_size, hidden_size, output_size, weight_init_std = 0.01): # 입력층의 뉴련수,은닉층의 뉴런수, 출력층의 뉴런수 초기화

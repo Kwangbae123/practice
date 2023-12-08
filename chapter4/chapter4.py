@@ -90,7 +90,7 @@ def gradient_descent(f, init_x, lr=0.01, step_num=100):
         grad = numerical_gradient(f, x) # numerical_gradient를 이용해 함수의 기울기를 구한다.
         x -= lr*grad
 
-from chapter3 import softmax
+from chapter3.chapter3 import softmax
 
 class simpleNet:
     def __init__(self):

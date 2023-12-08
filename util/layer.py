@@ -1,7 +1,10 @@
-# 역전파
+import sys, os
+sys.path.append(os.pardir)
+
 import numpy as np
-from chapter3 import softmax
-from chapter4 import cross_entropy_error
+from util.function import softmax
+from util.function import cross_entropy_error
+
 # 곱셈계층의 역전파 구현
 class MulLayer:
     def __init__(self):
@@ -19,26 +22,6 @@ class MulLayer:
         dy = dout * self.x
         return dx, dy
 
-# # p.161 예제 구현 (사과 2개 구입시 순전파, 역전파)
-# apple = 100
-# apple_num = 2
-# tax = 1.1
-#
-# # 계층 정의
-# mul_apple_layer = MulLayer()
-# mul_tax_layer = MulLayer()
-#
-# # 순전파
-# apple_price = mul_apple_layer.forward(apple, apple_num)
-# price = mul_tax_layer.forward(apple_price, tax)
-# print(int(price))
-#
-# #역전파
-# dprice = 1
-# dapple_price, dtax = mul_tax_layer.backward(dprice)
-# dapple, dapple_num = mul_apple_layer.backward(dapple_price)
-# print(dapple, int(dapple_num), dtax)
-
 # 덧셈 계층
 class AddLayer:
     def __init__(self):
@@ -53,35 +36,8 @@ class AddLayer:
         dy = dout * 1
         return dx, dy
 
-apple = 100
-apple_num  = 2
-orange = 150
-orange_num = 3
-tax = 1.1
-
-mul_apple_layer = MulLayer()
-mul_orange_layer = MulLayer()
-add_apple_orange_layer = AddLayer()
-mul_tax_layer = MulLayer()
-
-# 순전파
-apple_price = mul_apple_layer.forward(apple, apple_num)
-orange_price = mul_orange_layer.forward(orange, orange_num)
-all_price = add_apple_orange_layer.forward(apple_price, orange_price)
-price = mul_tax_layer.forward(all_price, tax)
-
-# 역전파
-dprice = 1
-dall_price, dtax = mul_tax_layer.backward(dprice)
-dapple_price, dorange_price = add_apple_orange_layer.backward(dall_price)
-dorange, dorange_num = mul_orange_layer.backward(dorange_price)
-dappel, dapple_num = mul_apple_layer.backward(dapple_price)
-
-print(int(price))
-print(dapple_num, dappel, dorange, dorange_num, dtax)
-
 # ReLU 함수의 순전파 역전파 구현
-class Relu:
+class ReLU:
     def __init__(self):
         # mask는 True/False 로 구성된 numpy 배열
         self.mask = None
@@ -97,6 +53,7 @@ class Relu:
         dx = dout
         return dx
 
+
 # sigmoid 함수의 순전파 역전파 구현
 class Sigmoid:
     def __init__(self):
@@ -111,6 +68,7 @@ class Sigmoid:
         dx = dout * (1.0 - self.out) * self.out
         return dx
 
+# Affine 계층 구현
 class Affine:
     def __init__(self, W, b):
         self.W = W
@@ -140,6 +98,7 @@ class Affine:
         dx = dx.reshape(*self.original_x_shape)  # 입력 데이터 모양 변경(텐서 대응)
         return dx
 
+
 # Softmax-with-Loss
 class SoftmaxWithLoss:
     def __init__(self):
@@ -162,4 +121,3 @@ class SoftmaxWithLoss:
             dx[np.arange(batch_size), self.t] -= 1
             dx = dx / batch_size
         return dx
-

@@ -1,7 +1,6 @@
-# 확률적 경사하강법 구현
 import numpy as np
 
-
+# SGD(Stochastic Gradient Descent, 확률적 경사하강법)
 class SGD:
     def __init__(self, lr = 0.01):
         self.lr = lr
@@ -27,6 +26,7 @@ class Momentum:
             self.v[key] = self.momentum * self.v - self.lr * grads[key]
             params[key] += self.v[key]
 
+# AdaGrad 구현
 class AdaGrad:
     def __init__(self, lr = 0.01):
         self.lr = lr
@@ -42,7 +42,7 @@ class AdaGrad:
             self.h[key] += grads[key] * grads[key]
             params[key] -= self.lr * grads[key] / (np.sqrt(self.h[key]) + 1e-7)
 
-
+# Adam 구현
 class Adam:
     """Adam (http://arxiv.org/abs/1412.6980v8)"""
     def __init__(self, lr=0.001, beta1=0.9, beta2=0.999):
@@ -74,5 +74,3 @@ class Adam:
             # unbias_m += (1 - self.beta1) * (grads[key] - self.m[key]) # correct bias
             # unbisa_b += (1 - self.beta2) * (grads[key]*grads[key] - self.v[key]) # correct bias
             # params[key] += self.lr * unbias_m / (np.sqrt(unbisa_b) + 1e-7)
-
-# 오버피팅 부분 코딩 진행해야함 p 215

@@ -1,12 +1,10 @@
 #MNIST 데이터셋 0~9까지 숫자 이미지
 import pickle
-
-import chapter2
 import chapter3
 import numpy as np
-import matplotlib as plt
 import sys, os
 from PIL import Image
+
 sys.path.append((os.pardir))
 from mnist import load_mnist
 
@@ -35,7 +33,7 @@ def get_data():
     return x_test, t_test
 
 def init_network():
-    with open("sample_weight.pkl", 'rb') as f: # 학습된 가중치의 매개변수를 읽는다. 파일에 가중치, bias의 변수가 저장되어있음
+    with open("../sample_weight.pkl", 'rb') as f: # 학습된 가중치의 매개변수를 읽는다. 파일에 가중치, bias의 변수가 저장되어있음
         network = pickle.load(f)
     return network
 
