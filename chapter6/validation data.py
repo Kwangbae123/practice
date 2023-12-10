@@ -2,7 +2,7 @@
 import sys, os
 sys.path.append(os.pardir)
 from mnist import load_mnist
-from util.util import shuffle_dataset
+from utils.util import shuffle_dataset
 
 (x_train, t_train), (x_test, t_test) = load_mnist()
 

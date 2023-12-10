@@ -1,7 +1,7 @@
 # 2층 신경망 클래스 구현
 import os, sys
 sys.path.append(os.pardir)
-from util.gradient import numerical_gradient
+from utils.gradient import numerical_gradient
 from chapter5 import *
 from collections import OrderedDict #순서가 있는 딕셔너리 생성 모듈
 

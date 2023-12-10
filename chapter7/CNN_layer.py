@@ -2,7 +2,7 @@
 import sys,os
 sys.path.append(os.pardir)
 import numpy as np
-from util.util import im2col, col2im
+from utils.util import im2col, col2im
 
 x1 = np.random.rand(1, 3, 7, 7) # (데이터수, 채널수, 높이, 너비)
 col1 = im2col(x1, 5, 5, stride=1, pad=0)

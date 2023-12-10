@@ -26,6 +26,30 @@ class Momentum:
             self.v[key] = self.momentum * self.v - self.lr * grads[key]
             params[key] += self.v[key]
 
+# Nesterov 구현
+class Nesterov:
+    """Nesterov's Accelerated Gradient (http://arxiv.org/abs/1212.0901)"""
+
+    # NAG는 모멘텀에서 한 단계 발전한 방법이다. (http://newsight.tistory.com/224)
+
+    def __init__(self, lr=0.01, momentum=0.9):
+        self.lr = lr
+        self.momentum = momentum
+        self.v = None
+
+    def update(self, params, grads):
+        if self.v is None:
+            self.v = {}
+            for key, val in params.items():
+                self.v[key] = np.zeros_like(val)
+
+        for key in params.keys():
+            self.v[key] *= self.momentum
+            self.v[key] -= self.lr * grads[key]
+            params[key] += self.momentum * self.momentum * self.v[key]
+            params[key] -= (1 + self.momentum) * self.lr * grads[key]
+
+
 # AdaGrad 구현
 class AdaGrad:
     def __init__(self, lr = 0.01):
@@ -41,6 +65,28 @@ class AdaGrad:
         for key in params.keys():
             self.h[key] += grads[key] * grads[key]
             params[key] -= self.lr * grads[key] / (np.sqrt(self.h[key]) + 1e-7)
+
+
+# RMSprop 구현
+class RMSprop:
+    """RMSprop"""
+
+    def __init__(self, lr=0.01, decay_rate=0.99):
+        self.lr = lr
+        self.decay_rate = decay_rate
+        self.h = None
+
+    def update(self, params, grads):
+        if self.h is None:
+            self.h = {}
+            for key, val in params.items():
+                self.h[key] = np.zeros_like(val)
+
+        for key in params.keys():
+            self.h[key] *= self.decay_rate
+            self.h[key] += (1 - self.decay_rate) * grads[key] * grads[key]
+            params[key] -= self.lr * grads[key] / (np.sqrt(self.h[key]) + 1e-7)
+
 
 # Adam 구현
 class Adam:

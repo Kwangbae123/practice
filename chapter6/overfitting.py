@@ -5,8 +5,8 @@ sys.path.append(os.pardir)
 import numpy as np
 import matplotlib.pyplot as plt
 from mnist import load_mnist
-from util.multi_layer_net import MultiLayerNet
-from util.optimizer import SGD
+from utils.multi_layer_net import MultiLayerNet
+from utils.optimizer import SGD
 
 (x_train, t_train), (x_test, t_test) = load_mnist(normalize=True)
 

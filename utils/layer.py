@@ -2,9 +2,9 @@ import sys, os
 sys.path.append(os.pardir)
 
 import numpy as np
-from util.function import softmax
-from util.function import cross_entropy_error
-from util.util import im2col, col2im
+from utils.function import softmax
+from utils.function import cross_entropy_error
+from utils.util import im2col, col2im
 
 # 곱셈계층의 역전파 구현
 class MulLayer:
@@ -130,6 +130,11 @@ class Convolution:
         self.b = b
         self.stride = stride
         self.pad = pad
+        self.x = None
+        self.col = None
+        self.col_W = None
+        self.db = None
+        self.dW = None
 
     def forward(self, x):
         FN, C, FH, FW = self.W.shape # FN : 필터갯수 / C : 채널수, FH : 필터 높이, FW : 필터 너비
@@ -145,6 +150,11 @@ class Convolution:
 
         # transpose 함수를 사용해 배열의 순서를 변경한다.
         out = out.reshape(N, out_h, out_w, -1).transpose(0, 3, 1, 2)
+
+        self.x = x
+        self.col = col
+        self.col_W = col_W
+
         return out
 
     def backward(self, dout):
@@ -157,16 +167,17 @@ class Convolution:
 
         dcol = np.dot(dout, self.col_W.T)
         dx = col2im(dcol, self.x.shape, FH, FW, self.stride, self.pad)
-        return dx
 
+        return dx
 
 # 풀링 계층 구현
 class Pooling:
-    def __init__(self, pool_h, pool_w, stride = 1, pad = 0):
+    def __init__(self, pool_h, pool_w, stride=1, pad=0):
         self.pool_h = pool_h
         self.pool_w = pool_w
         self.stride = stride
         self.pad = pad
+
         self.x = None
         self.arg_max = None
 
@@ -175,15 +186,16 @@ class Pooling:
         out_h = int(1 + (H - self.pool_h) / self.stride)
         out_w = int(1 + (W - self.pool_w) / self.stride)
 
-        # 전개(1)
-        col = im2col(x, self.pool_h, self.pool_w, self.stride)
+        col = im2col(x, self.pool_h, self.pool_w, self.stride, self.pad)
         col = col.reshape(-1, self.pool_h * self.pool_w)
 
-        # 전개한 값에서 영역별 최댓값 추출한다.
-        out = np.max(col, axis = 1)
-
-        # 출력데이터 형상에 맞게 reshape 해준다.
+        arg_max = np.argmax(col, axis=1)
+        out = np.max(col, axis=1)
         out = out.reshape(N, out_h, out_w, C).transpose(0, 3, 1, 2)
+
+        self.x = x
+        self.arg_max = arg_max
+
         return out
 
     def backward(self, dout):
@@ -196,4 +208,5 @@ class Pooling:
 
         dcol = dmax.reshape(dmax.shape[0] * dmax.shape[1] * dmax.shape[2], -1)
         dx = col2im(dcol, self.x.shape, self.pool_h, self.pool_w, self.stride, self.pad)
+
         return dx

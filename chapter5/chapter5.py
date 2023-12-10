@@ -1,7 +1,7 @@
 # 역전파
 import numpy as np
-from util.function import softmax
-from util.function import cross_entropy_error
+from utils.function import softmax
+from utils.function import cross_entropy_error
 # 곱셈계층의 역전파 구현
 class MulLayer:
     def __init__(self):
